@@ -5,22 +5,23 @@ endif
 
 SUBDIRS = obj bin # Auto generated directories
 
-CFLAGS_DEBUG 	= -Wall -Werror -g3 -std=c++17
-CFLAGS_RELEASE 	= -Wall -Werror -std=c++17
+CFLAGS_RELEASE 	= -std=c++17 -Wall -Werror
+CFLAGS_DEBUG 	= $(CFLAGS_RELEASE) -g3
 CC				= g++
+LIBS			= -lGL -lglut -lm
 
 all: test release debug
 
-test: 
+test:
 
 release: main.cpp
 	mkdir -p release
-	$(CC) $(CFLAGS_RELEASE) -o release/gl-arm -I. $^
+	$(CC) $(CFLAGS_RELEASE) -o release/gl-arm -I. $^ $(LIBS)
 	echo done -- made $@/gl-arm
 
 debug: main.cpp
 	mkdir -p debug
-	$(CC) $(CFLAGS_DEBUG) -o debug/gl-arm -I. $^
+	$(CC) $(CFLAGS_DEBUG) -o debug/gl-arm -I. $^ $(LIBS)
 	echo done -- made $@/gl-arm
 
 .PHONY: all clean subdirs $(SUBDIRS)
