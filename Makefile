@@ -5,6 +5,8 @@ endif
 
 SUBDIRS = obj bin # Auto generated directories
 
+$(info $(shell mkdir -p $(SUBDIRS))) # Quietly create directories anytime make is ran
+
 CFLAGS_RELEASE 	= -std=c++17 -Wall -Werror
 CFLAGS_DEBUG 	= $(CFLAGS_RELEASE) -g3
 CC				= g++
@@ -24,16 +26,13 @@ debug: main.cpp
 	$(CC) $(CFLAGS_DEBUG) -o debug/gl-arm -I. $^ $(LIBS)
 	echo done -- made $@/gl-arm
 
-.PHONY: all clean subdirs $(SUBDIRS)
+.PHONY: subdirs
 
 #####################################################################
 # Source Files
 #####################################################################
 
-subdirs: $(SUBDIRS)
 
-$(SUBDIRS):
-	mkdir -p $@
 
 clean:
 	rm -rf obj/

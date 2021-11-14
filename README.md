@@ -10,7 +10,6 @@ Articulating Arm in OpenGL for ComS 336
 ## How to use
 Run the following commands in the top directory
 ```bash
-make subdirs
 make release
 ./release/gl-arm
 ```
