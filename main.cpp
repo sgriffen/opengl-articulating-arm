@@ -11,6 +11,7 @@
 #define WINDOW_W 400
 
 float xRotated, yRotated, zRotated;
+GLUquadricObj *upperArm, *lowerArm, *hand;
 
 void gl_init(int argc, char *argv[]);
 void idle();
@@ -37,6 +38,16 @@ void gl_init(int argc, char *argv[]) {
 	//glOrtho(-WINDOW_W/2, WINDOW_W/2, -WINDOW_W/2, WINDOW_W/2, 1, -1);
 	//glMatrixMode(GL_MODELVIEW);
 	//glLoadIdentity();
+
+	//Setup arm
+	upperArm = gluNewQuadric();
+	gluQuadricDrawStyle(upperArm, GLU_LINE);
+
+	lowerArm = gluNewQuadric();
+	gluQuadricDrawStyle(lowerArm, GLU_LINE);
+
+	hand = gluNewQuadric();
+	gluQuadricDrawStyle(hand, GLU_LINE);
 
 	glutIdleFunc(idle);
 	glutReshapeFunc(reshape);
@@ -77,12 +88,20 @@ void handler_draw() {
 	//gluCylinder(shape1, 10, 10, 5, 10, 10);
 	//glutWire
 
-	glBegin(GL_POLYGON);
-    glVertex2f (-1,  -1);
-    glVertex2f(1,  -1);
-    glVertex2f(1, 1);
-    glVertex2f( -1, 1);
-	glEnd();
+	// glBegin(GL_POLYGON);
+    // glVertex2f (-1,  -1);
+    // glVertex2f(1,  -1);
+    // glVertex2f(1, 1);
+    // glVertex2f( -1, 1);
+	// glEnd();
+
+	
+	gluCylinder(upperArm, .2, .2, 1.5, 20, 20);
+	gluCylinder(lowerArm, .2, .2, 1.2, 20, 20);
+	gluCylinder(hand, .2, .3, 0.5, 20, 20);
+
+	gluPolygon
+
 
     glFlush();
 	glutSwapBuffers();
