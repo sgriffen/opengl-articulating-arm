@@ -46,3 +46,5 @@ bin/
 release/
 out/
 debug/
+
+*.sh
