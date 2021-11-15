@@ -1,4 +1,3 @@
-# Temp until I make a cmakelist.txt
 ifndef VERBOSE
 .SILENT:
 endif
@@ -10,7 +9,7 @@ $(info $(shell mkdir -p $(SUBDIRS))) # Quietly create directories anytime make i
 CFLAGS_RELEASE 	= -std=c++17 -Wall -Werror
 CFLAGS_DEBUG 	= $(CFLAGS_RELEASE) -g3
 CC				= g++
-LIBS			= -lGL -lglut -lm
+LIBS			= -lGL -lglut -lm -lGLU
 
 all: test release debug
 

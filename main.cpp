@@ -5,11 +5,16 @@
 
 #include <GL/gl.h>
 #include <GL/glut.h>
+#include <GL/glu.h>
 
 #define WINDOW_H 600
 #define WINDOW_W 400
 
+float xRotated, yRotated, zRotated;
+
 void gl_init(int argc, char *argv[]);
+void idle();
+void reshape(int x, int y);
 void handler_draw();
 void handler_input(unsigned char key, int x, int y);
 
@@ -21,39 +26,66 @@ int main(int argc, char *argv[]) {
 }
 
 void gl_init(int argc, char *argv[]) {
+	xRotated = yRotated = zRotated = 30.0;
 
 	glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE);
+    //rglutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_W, WINDOW_H);
     glutCreateWindow("ComS 336 HW 4 - Articulating Arm");
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-WINDOW_W/2, WINDOW_W/2, -WINDOW_W/2, WINDOW_W/2, 1, -1);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	//glEnable(GL_DEPTH_TEST);
+	//glOrtho(-WINDOW_W/2, WINDOW_W/2, -WINDOW_W/2, WINDOW_W/2, 1, -1);
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 
+	glutIdleFunc(idle);
+	glutReshapeFunc(reshape);
     glutKeyboardFunc(handler_input);
 	glutDisplayFunc(handler_draw);
-
     glutMainLoop();
-
 	return;
 }
 
+void idle() {
+	xRotated += 0.1;
+	//yRotated += 0.1;
+	zRotated += 0.1;
+	handler_draw();
+}
+
+void reshape(int x, int y) {
+	if(y == 0 || x == 0) return;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(39.0, (GLdouble)x/(GLdouble)y, 0.6, 21.0);
+	glMatrixMode(GL_MODELVIEW);
+	glViewport(0,0,x,y);
+}
+
 void handler_draw() {
+	glMatrixMode(GL_MODELVIEW);
+	//clear window
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glLoadIdentity();
+	glTranslatef(0.0,0.0,-5.0);
+	glColor3f(0.0, 0.0, 1.0);
+	glRotatef(xRotated, 1.0, 0.0, 0.0);
+	glRotatef(yRotated, 0.0, 1.0, 0.0);
+	glRotatef(zRotated, 0.0, 0.0, 1.0);
+	glScalef(1.0,1.0,1.0);
+	//gluCylinder(shape1, 10, 10, 5, 10, 10);
+	//glutWire
 
 	glBegin(GL_POLYGON);
+    glVertex2f (-1,  -1);
+    glVertex2f(1,  -1);
+    glVertex2f(1, 1);
+    glVertex2f( -1, 1);
+	glEnd();
 
-    glVertex2f (-.3,  -.3);
-    glVertex2f(.3,  -.3);
-    glVertex2f(.3, .3);
-    glVertex2f( -.3, .3);
-
-    glEnd();
     glFlush();
-
-	return;
+	glutSwapBuffers();
 }
 
 void handler_input(unsigned char key, int x, int y) {
