@@ -25,7 +25,7 @@ debug: main.cpp
 	$(CC) $(CFLAGS_DEBUG) -o debug/gl-arm -I. $^ $(LIBS)
 	echo done -- made $@/gl-arm
 
-.PHONY: subdirs
+.PHONY: all 
 
 #####################################################################
 # Source Files

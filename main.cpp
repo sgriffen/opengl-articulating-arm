@@ -52,7 +52,7 @@ void gl_init(int argc, char *argv[]) {
 	glutInit(&argc, argv);
     //rglutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_W, WINDOW_H);
-    glutCreateWindow("ComS 336 HW 4 - Articulating Arm");
+    glutCreateWindow("ComS 336 HW 4 - Articulating Arm - Projection");
 
 	glutIdleFunc(handler_idle);
 	glutReshapeFunc(handler_reshape);
@@ -79,14 +79,24 @@ void handler_idle() {
 
 void handler_reshape(int winW, int winH) {
 	if (!winW || !winH) { return; }
+	handler_camera(winW, winH);
+}
+
+void handler_camera(int winW, int winH) {
+	glViewport(0,0,winW,winH);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	handler_camera(winW, winH);
-
-	gluPerspective(39.0, (GLdouble)winW/(GLdouble)winH, 0.6, 21.0);
+	if (projectionType) {
+		// 2d orthographic projection mode
+		glOrtho(-1.5*(GLfloat)winW/(GLfloat)winH, 1.5*(GLfloat)winW/(GLfloat)winH, -1.5, 1.5, 0.6, 21.0);
+	} else {
+		// 3d perspective projection mode
+		gluPerspective(39.0, (GLdouble)winW/(GLdouble)winH, 0.6, 21.0);
+	}
 	glMatrixMode(GL_MODELVIEW);
-	glViewport(0,0,winW,winH);
+	glLoadIdentity();
+	// gluLookAt(); // Move and point the camera to a different spot
 }
 
 void handler_draw() {
@@ -96,7 +106,7 @@ void handler_draw() {
 
 	handler_camera(winW, winH);
 
-	glMatrixMode(GL_MODELVIEW);
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 
 	// apply global transforms to all objects in scene
@@ -112,21 +122,21 @@ void handler_draw() {
 	glRotatef(uarm_xRotated, 1.0, 0.0, 0.0);
 	glRotatef(uarm_yRotated, 0.0, 1.0, 0.0);
 	glRotatef(uarm_zRotated, 0.0, 0.0, 1.0);
-	draw_cylinder(upperArm, 0.1, 0.1, 1.5, 1.0, 0.0, 0.0);
+	draw_cylinder(upperArm, 0.1, 0.1, 1.5, 1.0, 0.0, 0.0, 20, 20, GLU_FILL);
 
 	// draw lower arm with rotation and position offsets
 	glTranslated(0.0, 0.0, 1.5);
 	//glRotatef(90.0, 0.0, 0.0, 1.0); // fix orientation so curl is "side-to-side" relative to camera position
 	glRotatef(larm_xRotated, 1.0, 0.0, 0.0);
 	glRotatef(larm_zRotated, 0.0, 0.0, 1.0);
-	draw_cylinder(lowerArm, 0.1, 0.1, 1.0, 0.0, 1.0, 0.0);
+	draw_cylinder(lowerArm, 0.1, 0.1, 1.0, 0.0, 1.0, 0.0, 20, 20, GLU_FILL);
 
 	// draw hand with rotation and position offsets
 	glTranslated(0.0, 0.0, 1.0);
 	//glRotatef(90.0, 0.0, 0.0, 1.0); // fix orientation so pitch is "up-and-down" and yaw is "side-to-side" relative to camera position
 	glRotatef(hand_xRotated, 1.0, 0.0, 0.0);
 	glRotatef(hand_yRotated, 0.0, 1.0, 0.0);
-	draw_cylinder(hand, 0.1, 0.15, 0.5, 0.0, 0.0, 1.0);
+	draw_cylinder(hand, 0.1, 0.15, 0.5, 0.0, 0.0, 1.0, 20, 20, GLU_FILL);
 
     glFlush();
 	glutSwapBuffers();
@@ -196,6 +206,10 @@ void handler_input(unsigned char key, int x, int y) {
 			break;
 		case 'o': // toggle orthographic/perspective projection
 			projectionType = !projectionType;
+			if(projectionType)
+				glutSetWindowTitle("ComS 336 HW 4 - Articulating Arm - Orthographic");
+			else
+				glutSetWindowTitle("ComS 336 HW 4 - Articulating Arm - Projection");
 			break;
 		case 32: // space bar
 			// change draw style
@@ -209,21 +223,6 @@ void handler_input(unsigned char key, int x, int y) {
 			exit(0);
 			break;
 	}
-}
-
-void handler_camera(int winW, int winH) {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	if (projectionType) {
-		// 2d orthographic projection mode
-
-	} else {
-		// 3d perspective projection mode
-		gluPerspective(39.0, (GLdouble)winW/(GLdouble)winH, 0.6, 21.0);
-	}
-
-	glMatrixMode(GL_MODELVIEW);
 }
 
 void draw_cylinder(GLUquadricObj *obj, GLdouble radiusB, GLdouble radiusT, GLdouble height, GLfloat colorR, GLfloat colorG, GLfloat colorB, GLint slices, GLint stacks, GLenum style) {
