@@ -37,5 +37,5 @@ To interact with the scene he is a list of commands that will affect the shapes 
 - `a` : Yaw the hand at the wrist about the hand's y axis in the positive direction
 - `A` : Yaw the hand at the wrist about the hand's y axis in the negative direction
 - `o` : Toggle orthographic/perspective projection - The window title will let you know which mode you're in
-- space: Toggle the drawing style for the cylinders. Switch between line, silhouette, point, and fill
-- esc: exit the program
+- `space`: Toggle the drawing style for the cylinders. Switch between line, silhouette, point, and fill
+- `esc`: exit the program
