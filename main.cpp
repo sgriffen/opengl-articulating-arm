@@ -17,7 +17,7 @@
 // global vars
 GLUquadricObj *upperArm, *lowerArm, *hand; // objects in the scene
 bool projectionType = 0; // projection type of the scene (0 for perspective, 1 for orthographic)
-GLenum g_drawStyle = GLU_LINE; // style to draw objects in
+GLenum g_drawStyle = GLU_FILL; // style to draw objects in
 float g_xTranslated = 0.0, g_yTranslated = 0.0, g_zTranslated = -5.0; // global world-space translation offsets for all objects in scene
 float g_xRotated = 0.0, g_yRotated = 0.0, g_zRotated = 0.0; // global world-space translation offsets for all objects in scene
 float uarm_xRotated = 45.0; // upper arm rotation amount in it's relative x-axis
@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
 }
 
 void gl_init(int argc, char *argv[]) {
+
 	g_xRotated = g_yRotated = g_zRotated = 30.0;
 
 	glutInit(&argc, argv);
@@ -59,8 +60,6 @@ void gl_init(int argc, char *argv[]) {
     glutKeyboardFunc(handler_input);
 	glutDisplayFunc(handler_draw);
 
-
-
     glutMainLoop();
 }
 
@@ -71,9 +70,9 @@ void scene_init() {
 }
 
 void handler_idle() {
-	g_xRotated += 0.1;
-	//g_yRotated += 0.1;
-	g_zRotated += 0.1;
+//	g_xRotated += 0.1;
+//	g_yRotated += 0.1;
+//	g_zRotated += 0.1;
 	handler_draw();
 }
 
@@ -100,43 +99,39 @@ void handler_camera(int winW, int winH) {
 }
 
 void handler_draw() {
-
 	int winW = glutGet(GLUT_WINDOW_WIDTH);
 	int winH = glutGet(GLUT_WINDOW_HEIGHT);
 
 	handler_camera(winW, winH);
 
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 
 	// apply global transforms to all objects in scene
 	glLoadIdentity();
 	glTranslated(-1.5, 1.0, 0.0);
 	glTranslatef(g_xTranslated,g_yTranslated,g_zTranslated); // global world-space translation on all objects in scene
-	//glRotatef(g_xRotated, 1.0, 0.0, 0.0); // global world-space x-axis rotation offset on all objects in scene
-	//glRotatef(g_yRotated, 0.0, 1.0, 0.0); // global world-space y-axis rotation offset on all objects in scene
-	//glRotatef(g_zRotated, 0.0, 0.0, 1.0); // global world-space z-axis rotation offset on all objects in scene
+//	glRotatef(g_xRotated, 1.0, 0.0, 0.0); // global world-space x-axis rotation offset on all objects in scene
+//	glRotatef(g_yRotated, 0.0, 1.0, 0.0); // global world-space y-axis rotation offset on all objects in scene
+//	glRotatef(g_zRotated, 0.0, 0.0, 1.0); // global world-space z-axis rotation offset on all objects in scene
 	glScalef(1.0,1.0,1.0);
 
 	// draw upper arm with rotation and position offsets
 	glRotatef(uarm_xRotated, 1.0, 0.0, 0.0);
 	glRotatef(uarm_yRotated, 0.0, 1.0, 0.0);
 	glRotatef(uarm_zRotated, 0.0, 0.0, 1.0);
-	draw_cylinder(upperArm, 0.1, 0.1, 1.5, 1.0, 0.0, 0.0, 20, 20, GLU_FILL);
+	draw_cylinder(upperArm, 0.1, 0.1, 1.5, 1.0, 0.0, 0.0);
 
 	// draw lower arm with rotation and position offsets
 	glTranslated(0.0, 0.0, 1.5);
-	//glRotatef(90.0, 0.0, 0.0, 1.0); // fix orientation so curl is "side-to-side" relative to camera position
 	glRotatef(larm_xRotated, 1.0, 0.0, 0.0);
 	glRotatef(larm_zRotated, 0.0, 0.0, 1.0);
-	draw_cylinder(lowerArm, 0.1, 0.1, 1.0, 0.0, 1.0, 0.0, 20, 20, GLU_FILL);
+	draw_cylinder(lowerArm, 0.1, 0.1, 1.0, 0.0, 1.0, 0.0);
 
 	// draw hand with rotation and position offsets
 	glTranslated(0.0, 0.0, 1.0);
-	//glRotatef(90.0, 0.0, 0.0, 1.0); // fix orientation so pitch is "up-and-down" and yaw is "side-to-side" relative to camera position
 	glRotatef(hand_xRotated, 1.0, 0.0, 0.0);
 	glRotatef(hand_yRotated, 0.0, 1.0, 0.0);
-	draw_cylinder(hand, 0.1, 0.15, 0.5, 0.0, 0.0, 1.0, 20, 20, GLU_FILL);
+	draw_cylinder(hand, 0.1, 0.15, 0.5, 0.0, 0.0, 1.0);
 
     glFlush();
 	glutSwapBuffers();
@@ -226,10 +221,14 @@ void handler_input(unsigned char key, int x, int y) {
 }
 
 void draw_cylinder(GLUquadricObj *obj, GLdouble radiusB, GLdouble radiusT, GLdouble height, GLfloat colorR, GLfloat colorG, GLfloat colorB, GLint slices, GLint stacks, GLenum style) {
-
 	glColor3f(colorR, colorG, colorB); // set color
 	gluQuadricDrawStyle(obj, style); // set draw style
-	gluCylinder(obj, radiusB, radiusT, height, slices, stacks); //draw cylinder
+
+	glPushMatrix(); // save current state
+	// draw bottom cap of cylinder
+	glRotated(180.0, 1.0, 0.0, 0.0);
+	gluDisk(obj, 0.0, radiusB, slices, stacks);
+	glPopMatrix(); // restore previous state
 
 	glPushMatrix(); // save current state
 	// draw top cap of cylinder
@@ -237,9 +236,6 @@ void draw_cylinder(GLUquadricObj *obj, GLdouble radiusB, GLdouble radiusT, GLdou
 	gluDisk(obj, 0.0, radiusT, slices, stacks);
 	glPopMatrix(); // restore previous state
 
-	glPushMatrix(); // save current state
-	// draw bottom cap of cylinder
-	glRotated(180.0, 1.0, 0.0, 0.0);
-	gluDisk(obj, 0.0, radiusB, slices, stacks);
-	glPopMatrix(); // restore previous state
+	//draw cylinder
+	gluCylinder(obj, radiusB, radiusT, height, slices, stacks);
 }

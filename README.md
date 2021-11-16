@@ -16,12 +16,12 @@ make release
 
 To interact with the scene he is a list of commands that will affect the shapes on screen and a description of their effect.
 
-- `x` : Translate the arm in the world-space -x direction.
-- `X` : Translate the arm in the world-space +x direction.
-- `y` : Translate the arm in the world-space -y direction.
-- `Y` : Translate the arm in the world-space +y direction.
-- `z` : Translate the arm in the world-space -z direction.
-- `Z` : Translate the arm in the world-space +Z direction.
+- `x` : Translate the arm in the world-space -x direction
+- `X` : Translate the arm in the world-space +x direction
+- `y` : Translate the arm in the world-space -y direction
+- `Y` : Translate the arm in the world-space +y direction
+- `z` : Translate the arm in the world-space -z direction
+- `Z` : Translate the arm in the world-space +Z direction
 - `u` : Rotate the arm at the shoulder about the upper arm's x axis in the positive direction
 - `U` : Rotate the arm at the shoulder about the upper arm's x axis in the negative direction
 - `v` : Rotate the arm at the shoulder about the upper arm's y axis in the positive direction
@@ -36,4 +36,6 @@ To interact with the scene he is a list of commands that will affect the shapes 
 - `P` : Pitch the hand at the wrist about the hand's x axis in the negative direction
 - `a` : Yaw the hand at the wrist about the hand's y axis in the positive direction
 - `A` : Yaw the hand at the wrist about the hand's y axis in the negative direction
-- `o` : Toggle orthographic/perspective projection - The window title will let you know which mode you're in.
+- `o` : Toggle orthographic/perspective projection - The window title will let you know which mode you're in
+- space: Toggle the drawing style for the cylinders. Switch between line, silhouette, point, and fill
+- esc: exit the program
