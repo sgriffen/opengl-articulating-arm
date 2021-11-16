@@ -11,9 +11,7 @@ CFLAGS_DEBUG 	= $(CFLAGS_RELEASE) -g3
 CC				= g++
 LIBS			= -lGL -lglut -lm -lGLU
 
-all: test release debug
-
-test:
+all: release debug
 
 release: main.cpp
 	mkdir -p release
@@ -25,13 +23,11 @@ debug: main.cpp
 	$(CC) $(CFLAGS_DEBUG) -o debug/gl-arm -I. $^ $(LIBS)
 	echo done -- made $@/gl-arm
 
-.PHONY: all 
+.PHONY: all
 
 #####################################################################
 # Source Files
 #####################################################################
-
-
 
 clean:
 	rm -rf obj/
